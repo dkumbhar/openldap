@@ -59,6 +59,17 @@ The following table details the possible debug levels.
 |  1024       | Log communication with shell backends         |
 |  2048       | Log entry parsing debugging                   | 
 
+You can also set the following mount points by passing the `-v /host:/container` flag to Docker.
+
+|  Volume mount point | Description                        |
+| :------------------ | ---------------------------------- |
+|  `/var/lib/ldap`    | OpenLDAP data directory            |
+|  `/etc/openldap/`   | OpenLDAP configuration directory.  |
+
+**Notice: When mouting a directory from the host into the container, ensure that the mounted
+directory has the appropriate permissions and that the owner and group of the directory
+matches the user UID or name which is running inside the container.**
+
 Usage
 ---------------------------------
 
@@ -71,7 +82,11 @@ $ docker run -d --name openldap_server -p 389:389 -p 636:636 openshift/openldap-
 
 This will create a container named `openldap_server` running OpenLDAP with an admin
 user with credentials `cn=Manager,dc=example,dc=com:admin`. Ports 389 and 636 will be exposed and mapped
-to the host for `ldap` and `ldaps` endpoints, respectively.
+to the host for `ldap` and `ldaps` endpoints, respectively. If you want your directory to be persistent 
+across container executions, also add a `-v /host/data/path:/var/lib/ldap` argument to specify
+the OpenLDAP data files, and a `-v /host/config/path:/etc/openshift` argument to specify OpenLDAP
+configuration files. Ensure that a file named `CONFIGURED` exists in the directory you are mounting to `/etc/openldap`
+so that the startup scripts do not try to re-configure slapd.
 
 If the configuration directory is not initialized, the entrypoint script will first
 run [`run-openldap.sh`](2.4.41/run-openldap.sh) and setup necessary directory users and passwords. 
