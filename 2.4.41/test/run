@@ -6,7 +6,7 @@
 # The image has to be available before this script is executed.
 #
 
-set -exo nounset
+set -eo nounset
 shopt -s nullglob
 
 IMAGE_NAME=${IMAGE_NAME:-openshift/openldap-2441-centos7-candidate}
@@ -73,6 +73,7 @@ function test_connection() {
 function test_openldap() {
   echo "  Testing OpenLDAP"
   openldap_cmd "objectClass%3Dorganization" | grep -E "dc=example,dc=com" #objectClass=organization
+  ldapadd -x -h ${CONTAINER_IP} -p 389 -D cn=Manager,dc=example,dc=com -w admin -f test/test.ldif
   echo "  Success!"
 }
 

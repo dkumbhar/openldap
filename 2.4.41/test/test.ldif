@@ -1,0 +1,6 @@
+dn: cn=testPerson,dc=example,dc=com
+objectClass: person
+objectClass: testPerson
+cn: testPerson
+sn: testPerson
+testMemberOf: testGroup
